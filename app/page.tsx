@@ -6,25 +6,30 @@ import LabelCard from "../components/LabelCard";
 
 export default function Home() {
 
+  // ÜRÜNLER
   const [items, setItems] =
     useState<any[]>([]);
 
+  // SEÇİLENLER
   const [selected, setSelected] =
     useState<number[]>([]);
 
+  // SEKME
   const [activeTab, setActiveTab] =
     useState("urunler");
 
+  // ARAMA
   const [search, setSearch] =
     useState("");
 
+  // ETİKET AYARI
   const [settings, setSettings] =
     useState({
       width: 90,
       height: 40,
     });
 
-  // EXCEL
+  // EXCEL YÜKLE
   const handleFile = (e: any) => {
 
     const file = e.target.files[0];
@@ -47,22 +52,28 @@ export default function Home() {
       const sheet =
         workbook.Sheets[sheetName];
 
-      const parsed =
+      const parsed: any =
         XLSX.utils.sheet_to_json(sheet);
 
+      console.log(parsed);
+
       setItems(parsed);
+
+      // seçimleri temizle
+      setSelected([]);
     };
 
     reader.readAsBinaryString(file);
   };
 
-  // SEC
+  // ÜRÜN SEÇ
   const toggleSelect = (
     index: number
   ) => {
 
     setSelected((prev) => {
 
+      // varsa kaldır
       if (prev.includes(index)) {
 
         return prev.filter(
@@ -70,6 +81,7 @@ export default function Home() {
         );
       }
 
+      // yoksa ekle
       return [...prev, index];
     });
   };
@@ -84,12 +96,14 @@ export default function Home() {
           Système Étiquette
         </h1>
 
+        {/* EXCEL */}
         <input
           type="file"
           accept=".xlsx,.xls"
           onChange={handleFile}
         />
 
+        {/* YAZDIR */}
         <button
           onClick={() => window.print()}
           className="print-btn"
@@ -102,7 +116,7 @@ export default function Home() {
       {/* ANA */}
       <div className="layout">
 
-        {/* SOL */}
+        {/* SOL PANEL */}
         <div className="sidebar">
 
           {/* SEKME */}
@@ -136,11 +150,12 @@ export default function Home() {
 
           </div>
 
-          {/* URUNLER */}
+          {/* ÜRÜNLER */}
           {activeTab === "urunler" && (
 
             <>
 
+              {/* ARAMA */}
               <input
                 type="text"
                 placeholder="Rechercher..."
@@ -151,6 +166,7 @@ export default function Home() {
                 className="search-input"
               />
 
+              {/* LİSTE */}
               <div className="product-list">
 
                 {items
@@ -195,6 +211,7 @@ export default function Home() {
 
             <div className="settings-box">
 
+              {/* GENİŞLİK */}
               <label>
                 Largeur (mm)
               </label>
@@ -212,6 +229,7 @@ export default function Home() {
                 }
               />
 
+              {/* YÜKSEKLİK */}
               <label>
                 Hauteur (mm)
               </label>
@@ -235,7 +253,7 @@ export default function Home() {
 
         </div>
 
-        {/* SAG */}
+        {/* SAĞ */}
         <div className="preview-area">
 
           <div className="a4-page">
