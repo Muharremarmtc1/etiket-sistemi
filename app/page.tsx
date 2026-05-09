@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import LabelCard from "../components/LabelCard";
 
@@ -8,11 +8,39 @@ export default function Home() {
 
   // ÜRÜNLER
   const [items, setItems] =
-    useState<any[]>([]);
+    useState<any[]>(() => {
+
+      if (typeof window !== "undefined") {
+
+        const saved =
+          localStorage.getItem("items");
+
+        return saved
+          ? JSON.parse(saved)
+          : [];
+      }
+
+      return [];
+    });
 
   // SEÇİLENLER
   const [selected, setSelected] =
-    useState<number[]>([]);
+    useState<number[]>(() => {
+
+      if (typeof window !== "undefined") {
+
+        const saved =
+          localStorage.getItem(
+            "selected"
+          );
+
+        return saved
+          ? JSON.parse(saved)
+          : [];
+      }
+
+      return [];
+    });
 
   // SEKME
   const [activeTab, setActiveTab] =
@@ -28,6 +56,16 @@ export default function Home() {
       width: 90,
       height: 40,
     });
+
+  // SEÇİLENLERİ KAYDET
+  useEffect(() => {
+
+    localStorage.setItem(
+      "selected",
+      JSON.stringify(selected)
+    );
+
+  }, [selected]);
 
   // EXCEL YÜKLE
   const handleFile = (e: any) => {
@@ -57,9 +95,16 @@ export default function Home() {
 
       console.log(parsed);
 
+      // STATE
       setItems(parsed);
 
-      // seçimleri temizle
+      // LOCAL STORAGE
+      localStorage.setItem(
+        "items",
+        JSON.stringify(parsed)
+      );
+
+      // seçim temizle
       setSelected([]);
     };
 
