@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Barcode from "react-barcode";
 
 export default function LabelCard({
   item,
@@ -17,6 +18,7 @@ export default function LabelCard({
     const file = e.target.files[0];
 
     if (file) {
+
       setImage(
         URL.createObjectURL(file)
       );
@@ -32,6 +34,11 @@ export default function LabelCard({
         height: `${settings.height}mm`,
       }}
     >
+
+      {/* PROMO */}
+      <div className="promo-badge">
+        PROMO
+      </div>
 
       {/* SOL */}
       <div className="label-left">
@@ -50,23 +57,24 @@ export default function LabelCard({
           ) : (
 
             <span className="photo-placeholder">
-              FOTO
+              PHOTO
             </span>
 
           )}
 
         </div>
 
-        {/* FOTO BUTONU */}
+        {/* FOTO BUTTON */}
         <button
           onClick={() =>
             fileInputRef.current.click()
           }
           className="photo-button"
         >
-          FOTO
+          PHOTO
         </button>
 
+        {/* INPUT */}
         <input
           type="file"
           ref={fileInputRef}
@@ -77,13 +85,14 @@ export default function LabelCard({
 
       </div>
 
-      {/* SAĞ */}
+      {/* SAG */}
       <div className="label-right">
 
+        {/* UST */}
         <div>
 
           <div className="mini-brand">
-            FISHER PRICE
+            MARKET FRANCE
           </div>
 
           <div className="product-title">
@@ -91,23 +100,30 @@ export default function LabelCard({
           </div>
 
           <div className="product-desc">
-            ÜRÜN ÖZELLİĞİ
+            PRODUIT
           </div>
 
         </div>
 
-        {/* FİYAT */}
+        {/* FIYAT */}
         <div className="price">
-          €{item.fiyat} H.T
+          €{item.fiyat} HT
         </div>
 
-        {/* ALT */}
-        <div className="bottom-row">
+        {/* BARKOD */}
+        <div className="barcode-area">
 
-          <div>
-            Barkod: {item.barkod}
+          <Barcode
+            value={String(item.barkod)}
+            height={18}
+            width={1}
+            fontSize={8}
+            displayValue={false}
+          />
+
+          <div className="barcode-text">
+            {item.barkod}
           </div>
-
 
         </div>
 

@@ -6,24 +6,25 @@ import LabelCard from "../components/LabelCard";
 
 export default function Home() {
 
-  // ÜRÜNLER
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] =
+    useState<any[]>([]);
 
-  // SEÇİLENLER
-  const [selected, setSelected] = useState<number[]>([]);
+  const [selected, setSelected] =
+    useState<number[]>([]);
 
-  // SEKME
   const [activeTab, setActiveTab] =
     useState("urunler");
 
-  // ETİKET AYARLARI
+  const [search, setSearch] =
+    useState("");
+
   const [settings, setSettings] =
     useState({
       width: 90,
       height: 40,
     });
 
-  // EXCEL YÜKLE
+  // EXCEL
   const handleFile = (e: any) => {
 
     const file = e.target.files[0];
@@ -50,22 +51,18 @@ export default function Home() {
         XLSX.utils.sheet_to_json(sheet);
 
       setItems(parsed);
-
-      // seçim temizle
-      setSelected([]);
     };
 
     reader.readAsBinaryString(file);
   };
 
-  // ÜRÜN SEÇ
+  // SEC
   const toggleSelect = (
     index: number
   ) => {
 
     setSelected((prev) => {
 
-      // varsa kaldır
       if (prev.includes(index)) {
 
         return prev.filter(
@@ -73,7 +70,6 @@ export default function Home() {
         );
       }
 
-      // yoksa ekle
       return [...prev, index];
     });
   };
@@ -85,22 +81,20 @@ export default function Home() {
       <div className="topbar">
 
         <h1 className="main-title">
-          Etiket Tasarımı
+          Système Étiquette
         </h1>
 
-        {/* EXCEL */}
         <input
           type="file"
           accept=".xlsx,.xls"
           onChange={handleFile}
         />
 
-        {/* YAZDIR */}
         <button
           onClick={() => window.print()}
           className="print-btn"
         >
-          Yazdır
+          Imprimer
         </button>
 
       </div>
@@ -108,7 +102,7 @@ export default function Home() {
       {/* ANA */}
       <div className="layout">
 
-        {/* SOL PANEL */}
+        {/* SOL */}
         <div className="sidebar">
 
           {/* SEKME */}
@@ -124,7 +118,7 @@ export default function Home() {
                 setActiveTab("urunler")
               }
             >
-              Ürünler
+              Produits
             </button>
 
             <button
@@ -137,44 +131,58 @@ export default function Home() {
                 setActiveTab("ayarlar")
               }
             >
-              Etiket Boyutu
+              Taille
             </button>
 
           </div>
 
-          {/* ÜRÜNLER */}
+          {/* URUNLER */}
           {activeTab === "urunler" && (
 
             <>
 
-              <h2 className="sidebar-title">
-                Ürünler
-              </h2>
+              <input
+                type="text"
+                placeholder="Rechercher..."
+                value={search}
+                onChange={(e) =>
+                  setSearch(e.target.value)
+                }
+                className="search-input"
+              />
 
               <div className="product-list">
 
-                {items.map((item, index) => (
+                {items
+                  .filter((item: any) =>
+                    item.urun
+                      ?.toLowerCase()
+                      .includes(
+                        search.toLowerCase()
+                      )
+                  )
+                  .map((item, index) => (
 
-                  <label
-                    key={index}
-                    className="product-item"
-                  >
+                    <label
+                      key={index}
+                      className="product-item"
+                    >
 
-                    <input
-                      type="checkbox"
-                      checked={selected.includes(index)}
-                      onChange={() =>
-                        toggleSelect(index)
-                      }
-                    />
+                      <input
+                        type="checkbox"
+                        checked={selected.includes(index)}
+                        onChange={() =>
+                          toggleSelect(index)
+                        }
+                      />
 
-                    <span>
-                      {item.urun}
-                    </span>
+                      <span>
+                        {item.urun}
+                      </span>
 
-                  </label>
+                    </label>
 
-                ))}
+                  ))}
 
               </div>
 
@@ -185,61 +193,49 @@ export default function Home() {
           {/* AYARLAR */}
           {activeTab === "ayarlar" && (
 
-            <>
+            <div className="settings-box">
 
-              <h2 className="sidebar-title">
-                Etiket Boyutu
-              </h2>
+              <label>
+                Largeur (mm)
+              </label>
 
-              <div className="settings-box">
+              <input
+                type="number"
+                value={settings.width}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    width: Number(
+                      e.target.value
+                    ),
+                  })
+                }
+              />
 
-                {/* GENİŞLİK */}
-                <label>
-                  Genişlik (mm)
-                </label>
+              <label>
+                Hauteur (mm)
+              </label>
 
-                <input
-                  type="number"
-                  value={settings.width}
-                  onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      width:
-                        Number(
-                          e.target.value
-                        ),
-                    })
-                  }
-                />
+              <input
+                type="number"
+                value={settings.height}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    height: Number(
+                      e.target.value
+                    ),
+                  })
+                }
+              />
 
-                {/* YÜKSEKLİK */}
-                <label>
-                  Yükseklik (mm)
-                </label>
-
-                <input
-                  type="number"
-                  value={settings.height}
-                  onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      height:
-                        Number(
-                          e.target.value
-                        ),
-                    })
-                  }
-                />
-
-              </div>
-
-            </>
+            </div>
 
           )}
 
         </div>
 
-        {/* SAĞ */}
+        {/* SAG */}
         <div className="preview-area">
 
           <div className="a4-page">
@@ -259,6 +255,7 @@ export default function Home() {
         </div>
 
       </div>
+
     </main>
   );
 }
