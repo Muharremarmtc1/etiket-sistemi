@@ -1,0 +1,377 @@
+@import "tailwindcss";
+
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+/* GENEL */
+.page-bg{
+  background:#e5e7eb;
+  min-height:100vh;
+}
+
+/* TOPBAR */
+.topbar{
+  height:70px;
+
+  background:white;
+
+  border-bottom:1px solid #d1d5db;
+
+  display:flex;
+  align-items:center;
+  gap:20px;
+
+  padding:0 20px;
+}
+
+.main-title{
+  font-size:32px;
+  font-weight:900;
+}
+
+.print-btn{
+  background:black;
+  color:white;
+
+  border:none;
+
+  padding:12px 24px;
+
+  border-radius:14px;
+
+  font-size:14px;
+  font-weight:800;
+
+  cursor:pointer;
+
+  transition:.2s;
+
+  box-shadow:
+    0 4px 10px rgba(0,0,0,.15);
+}
+
+.print-btn:hover{
+  transform:translateY(-1px);
+}
+
+/* LAYOUT */
+.layout{
+  display:flex;
+}
+
+/* SOL PANEL */
+.sidebar{
+  width:320px;
+
+  background:white;
+
+  border-right:1px solid #d1d5db;
+
+  padding:20px;
+
+  min-height:calc(100vh - 70px);
+}
+
+.sidebar-title{
+  font-size:28px;
+  font-weight:900;
+
+  margin-bottom:20px;
+}
+
+/* SEKME */
+.tabs{
+  display:flex;
+
+  gap:10px;
+
+  margin-bottom:24px;
+}
+
+/* SEKME BUTON */
+.tab-btn{
+  flex:1;
+
+  height:48px;
+
+  border:none;
+
+  background:white;
+
+  border:2px solid #d1d5db;
+
+  border-radius:14px;
+
+  font-size:14px;
+  font-weight:800;
+
+  color:#111827;
+
+  cursor:pointer;
+
+  transition:all .2s ease;
+
+  box-shadow:
+    0 2px 6px rgba(0,0,0,.05);
+}
+
+.tab-btn:hover{
+  transform:translateY(-1px);
+
+  border-color:black;
+}
+
+.active-tab{
+  background:black;
+
+  color:white;
+
+  border-color:black;
+
+  box-shadow:
+    0 6px 14px rgba(0,0,0,.18);
+}
+
+/* AYARLAR */
+.settings-box{
+  display:flex;
+  flex-direction:column;
+
+  gap:10px;
+}
+
+.settings-box label{
+  font-size:14px;
+  font-weight:700;
+}
+
+.settings-box input{
+  border:1px solid #d1d5db;
+
+  padding:12px;
+
+  border-radius:10px;
+
+  font-size:14px;
+}
+
+/* ÜRÜNLER */
+.product-list{
+  display:flex;
+  flex-direction:column;
+
+  gap:10px;
+}
+
+.product-item{
+  background:#f3f4f6;
+
+  padding:12px;
+
+  border-radius:12px;
+
+  display:flex;
+  gap:10px;
+  align-items:center;
+
+  cursor:pointer;
+
+  font-size:14px;
+  font-weight:700;
+
+  transition:.2s;
+}
+
+.product-item:hover{
+  background:#e5e7eb;
+}
+
+/* SAĞ */
+.preview-area{
+  flex:1;
+
+  padding:30px;
+
+  overflow:auto;
+}
+
+/* A4 */
+.a4-page{
+  width:210mm;
+  min-height:297mm;
+
+  background:white;
+
+  margin:auto;
+
+  padding:10mm;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.15);
+
+  display:grid;
+
+  grid-template-columns:repeat(2, 1fr);
+
+  gap:6mm;
+
+  align-content:start;
+}
+
+/* ETIKET */
+.label-card{
+  width:90mm;
+  height:40mm;
+
+  border:2px solid #222;
+
+  border-radius:10px;
+
+  display:flex;
+
+  overflow:hidden;
+
+  padding:5px;
+
+  box-sizing:border-box;
+
+  background:white;
+}
+
+/* SOL */
+.label-left{
+  width:28%;
+
+  display:flex;
+  flex-direction:column;
+}
+
+.photo-area{
+  flex:1;
+
+  background:#f3f4f6;
+
+  border-radius:6px;
+
+  overflow:hidden;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.photo-placeholder{
+  font-size:10px;
+  color:#9ca3af;
+}
+
+.photo-img{
+  width:100%;
+  height:100%;
+
+  object-fit:cover;
+}
+
+.photo-button{
+  margin-top:4px;
+
+  height:18px;
+
+  border:none;
+
+  background:black;
+
+  color:white;
+
+  border-radius:4px;
+
+  font-size:9px;
+  font-weight:bold;
+
+  cursor:pointer;
+}
+
+/* SAĞ */
+.label-right{
+  flex:1;
+
+  padding-left:8px;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+
+.mini-brand{
+  font-size:8px;
+}
+
+.product-title{
+  font-size:14px;
+  font-weight:900;
+
+  line-height:1.1;
+
+  margin-top:2px;
+
+  text-transform:uppercase;
+}
+
+.product-desc{
+  font-size:9px;
+
+  margin-top:2px;
+}
+
+.price{
+  font-size:24px;
+
+  font-weight:900;
+
+  color:black;
+
+  line-height:1;
+}
+
+.bottom-row{
+  display:flex;
+  justify-content:space-between;
+
+  font-size:8px;
+}
+
+/* YAZDIR */
+@media print{
+
+  .topbar,
+  .sidebar{
+    display:none;
+  }
+
+  .preview-area{
+    padding:0;
+  }
+
+  .a4-page{
+    box-shadow:none;
+
+    margin:0;
+    padding:5mm;
+  }
+
+  body{
+    background:white;
+  }
+
+  /* FOTO BUTONU GİTSİN */
+  .photo-button{
+    display:none !important;
+  }
+
+  @page{
+    size:A4;
+    margin:0;
+  }
+}
