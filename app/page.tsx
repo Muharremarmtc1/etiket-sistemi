@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import LabelCard from "../components/LabelCard";
 
 export default function Home() {
@@ -42,22 +44,37 @@ export default function Home() {
       return [];
     });
 
+  // DARK
+  const [darkMode, setDarkMode] =
+    useState(false);
+
   // SEKME
   const [activeTab, setActiveTab] =
     useState("urunler");
 
-  // ARAMA
+  // SEARCH
   const [search, setSearch] =
     useState("");
 
-  // ETİKET AYARI
+  // ETİKET
   const [settings, setSettings] =
     useState({
       width: 90,
       height: 40,
     });
 
-  // SEÇİLENLERİ KAYDET
+  // YENİ ÜRÜN
+  const [newProduct, setNewProduct] =
+    useState({
+      urun: "",
+      fiyat: "",
+      barkod: "",
+    });
+
+  // PDF REF
+  const printRef = useRef(null);
+
+  // KAYDET
   useEffect(() => {
 
     localStorage.setItem(
@@ -67,7 +84,45 @@ export default function Home() {
 
   }, [selected]);
 
-  // EXCEL YÜKLE
+  // PDF
+  const downloadPDF = async () => {
+
+    const element: any =
+      printRef.current;
+
+    if (!element) return;
+
+    const canvas =
+      await html2canvas(element);
+
+    const data =
+      canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF(
+      "p",
+      "mm",
+      "a4"
+    );
+
+    const width = 210;
+
+    const height =
+      (canvas.height * width) /
+      canvas.width;
+
+    pdf.addImage(
+      data,
+      "PNG",
+      0,
+      0,
+      width,
+      height
+    );
+
+    pdf.save("etiquettes.pdf");
+  };
+
+  // EXCEL
   const handleFile = (e: any) => {
 
     const file = e.target.files[0];
@@ -93,32 +148,50 @@ export default function Home() {
       const parsed: any =
         XLSX.utils.sheet_to_json(sheet);
 
-      console.log(parsed);
-
-      // STATE
       setItems(parsed);
 
-      // LOCAL STORAGE
       localStorage.setItem(
         "items",
         JSON.stringify(parsed)
       );
 
-      // seçim temizle
       setSelected([]);
     };
 
     reader.readAsBinaryString(file);
   };
 
-  // ÜRÜN SEÇ
+  // EKLE
+  const addProduct = () => {
+
+    if (!newProduct.urun) return;
+
+    const updated = [
+      ...items,
+      newProduct,
+    ];
+
+    setItems(updated);
+
+    localStorage.setItem(
+      "items",
+      JSON.stringify(updated)
+    );
+
+    setNewProduct({
+      urun: "",
+      fiyat: "",
+      barkod: "",
+    });
+  };
+
+  // SEC
   const toggleSelect = (
     index: number
   ) => {
 
     setSelected((prev) => {
 
-      // varsa kaldır
       if (prev.includes(index)) {
 
         return prev.filter(
@@ -126,13 +199,19 @@ export default function Home() {
         );
       }
 
-      // yoksa ekle
       return [...prev, index];
     });
   };
 
   return (
-    <main className="page-bg">
+
+    <main
+      className={
+        darkMode
+          ? "page-bg dark"
+          : "page-bg"
+      }
+    >
 
       {/* TOPBAR */}
       <div className="topbar">
@@ -141,14 +220,12 @@ export default function Home() {
           Système Étiquette
         </h1>
 
-        {/* EXCEL */}
         <input
           type="file"
           accept=".xlsx,.xls"
           onChange={handleFile}
         />
 
-        {/* YAZDIR */}
         <button
           onClick={() => window.print()}
           className="print-btn"
@@ -156,12 +233,28 @@ export default function Home() {
           Imprimer
         </button>
 
+        <button
+          onClick={downloadPDF}
+          className="pdf-btn"
+        >
+          PDF
+        </button>
+
+        <button
+          onClick={() =>
+            setDarkMode(!darkMode)
+          }
+          className="dark-btn"
+        >
+          Dark
+        </button>
+
       </div>
 
       {/* ANA */}
       <div className="layout">
 
-        {/* SOL PANEL */}
+        {/* SOL */}
         <div className="sidebar">
 
           {/* SEKME */}
@@ -200,7 +293,7 @@ export default function Home() {
 
             <>
 
-              {/* ARAMA */}
+              {/* SEARCH */}
               <input
                 type="text"
                 placeholder="Rechercher..."
@@ -210,6 +303,54 @@ export default function Home() {
                 }
                 className="search-input"
               />
+
+              {/* EKLE */}
+              <div className="add-product-box">
+
+                <input
+                  placeholder="Produit"
+                  value={newProduct.urun}
+                  onChange={(e) =>
+                    setNewProduct({
+                      ...newProduct,
+                      urun:
+                        e.target.value,
+                    })
+                  }
+                />
+
+                <input
+                  placeholder="Prix"
+                  value={newProduct.fiyat}
+                  onChange={(e) =>
+                    setNewProduct({
+                      ...newProduct,
+                      fiyat:
+                        e.target.value,
+                    })
+                  }
+                />
+
+                <input
+                  placeholder="Code-barres"
+                  value={newProduct.barkod}
+                  onChange={(e) =>
+                    setNewProduct({
+                      ...newProduct,
+                      barkod:
+                        e.target.value,
+                    })
+                  }
+                />
+
+                <button
+                  onClick={addProduct}
+                  className="add-btn"
+                >
+                  Ajouter
+                </button>
+
+              </div>
 
               {/* LİSTE */}
               <div className="product-list">
@@ -256,7 +397,6 @@ export default function Home() {
 
             <div className="settings-box">
 
-              {/* GENİŞLİK */}
               <label>
                 Largeur (mm)
               </label>
@@ -274,7 +414,6 @@ export default function Home() {
                 }
               />
 
-              {/* YÜKSEKLİK */}
               <label>
                 Hauteur (mm)
               </label>
@@ -301,7 +440,10 @@ export default function Home() {
         {/* SAĞ */}
         <div className="preview-area">
 
-          <div className="a4-page">
+          <div
+            className="a4-page"
+            ref={printRef}
+          >
 
             {selected.map((selectedIndex) => (
 
