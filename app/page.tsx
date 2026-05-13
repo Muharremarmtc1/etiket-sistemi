@@ -1,50 +1,30 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
 import * as XLSX from "xlsx";
+
 import jsPDF from "jspdf";
+
 import html2canvas from "html2canvas";
+
 import LabelCard from "../components/LabelCard";
 
 export default function Home() {
 
   // ÜRÜNLER
   const [items, setItems] =
-    useState<any[]>(() => {
-
-      if (typeof window !== "undefined") {
-
-        const saved =
-          localStorage.getItem("items");
-
-        return saved
-          ? JSON.parse(saved)
-          : [];
-      }
-
-      return [];
-    });
+    useState<any[]>([]);
 
   // SEÇİLENLER
   const [selected, setSelected] =
-    useState<number[]>(() => {
+    useState<number[]>([]);
 
-      if (typeof window !== "undefined") {
-
-        const saved =
-          localStorage.getItem(
-            "selected"
-          );
-
-        return saved
-          ? JSON.parse(saved)
-          : [];
-      }
-
-      return [];
-    });
-
-  // DARK
+  // DARK MODE
   const [darkMode, setDarkMode] =
     useState(false);
 
@@ -71,10 +51,46 @@ export default function Home() {
       barkod: "",
     });
 
-  // PDF REF
+  // PDF
   const printRef = useRef(null);
 
-  // KAYDET
+  // LOCAL STORAGE LOAD
+  useEffect(() => {
+
+    const savedItems =
+      localStorage.getItem("items");
+
+    const savedSelected =
+      localStorage.getItem(
+        "selected"
+      );
+
+    if (savedItems) {
+
+      setItems(
+        JSON.parse(savedItems)
+      );
+    }
+
+    if (savedSelected) {
+
+      setSelected(
+        JSON.parse(savedSelected)
+      );
+    }
+
+  }, []);
+
+  // LOCAL STORAGE SAVE
+  useEffect(() => {
+
+    localStorage.setItem(
+      "items",
+      JSON.stringify(items)
+    );
+
+  }, [items]);
+
   useEffect(() => {
 
     localStorage.setItem(
@@ -150,18 +166,13 @@ export default function Home() {
 
       setItems(parsed);
 
-      localStorage.setItem(
-        "items",
-        JSON.stringify(parsed)
-      );
-
       setSelected([]);
     };
 
     reader.readAsBinaryString(file);
   };
 
-  // EKLE
+  // ÜRÜN EKLE
   const addProduct = () => {
 
     if (!newProduct.urun) return;
@@ -173,11 +184,6 @@ export default function Home() {
 
     setItems(updated);
 
-    localStorage.setItem(
-      "items",
-      JSON.stringify(updated)
-    );
-
     setNewProduct({
       urun: "",
       fiyat: "",
@@ -185,7 +191,7 @@ export default function Home() {
     });
   };
 
-  // SEC
+  // ÜRÜN SEÇ
   const toggleSelect = (
     index: number
   ) => {
@@ -220,12 +226,14 @@ export default function Home() {
           Système Étiquette
         </h1>
 
+        {/* EXCEL */}
         <input
           type="file"
           accept=".xlsx,.xls"
           onChange={handleFile}
         />
 
+        {/* PRINT */}
         <button
           onClick={() => window.print()}
           className="print-btn"
@@ -233,6 +241,7 @@ export default function Home() {
           Imprimer
         </button>
 
+        {/* PDF */}
         <button
           onClick={downloadPDF}
           className="pdf-btn"
@@ -240,6 +249,7 @@ export default function Home() {
           PDF
         </button>
 
+        {/* DARK */}
         <button
           onClick={() =>
             setDarkMode(!darkMode)
