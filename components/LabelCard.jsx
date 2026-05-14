@@ -15,7 +15,7 @@ export default function LabelCard({
 
   // FOTO KEY
   const storageKey =
-    `photo-${item.barkod}`;
+    `photo-${item.urun}`;
 
   // FOTO
   const [image, setImage] =
@@ -24,7 +24,7 @@ export default function LabelCard({
   // INPUT
   const fileInputRef = useRef(null);
 
-  // LOCAL STORAGE LOAD
+  // FOTO LOAD
   useEffect(() => {
 
     const saved =
@@ -108,7 +108,7 @@ export default function LabelCard({
 
         </div>
 
-        {/* BUTTON */}
+        {/* FOTO BUTTON */}
         <button
           onClick={() =>
             fileInputRef.current.click()
