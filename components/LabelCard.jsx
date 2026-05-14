@@ -1,6 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
 import Barcode from "react-barcode";
 
 export default function LabelCard({
@@ -8,21 +13,58 @@ export default function LabelCard({
   settings,
 }) {
 
+  // FOTO KEY
+  const storageKey =
+    `photo-${item.barkod}`;
+
+  // FOTO
   const [image, setImage] =
     useState(null);
 
+  // INPUT
   const fileInputRef = useRef(null);
 
+  // LOCAL STORAGE LOAD
+  useEffect(() => {
+
+    const saved =
+      localStorage.getItem(
+        storageKey
+      );
+
+    if (saved) {
+
+      setImage(saved);
+    }
+
+  }, [storageKey]);
+
+  // FOTO EKLE
   const handleImage = (e) => {
 
-    const file = e.target.files[0];
+    const file =
+      e.target.files[0];
 
-    if (file) {
+    if (!file) return;
 
-      setImage(
-        URL.createObjectURL(file)
+    const reader =
+      new FileReader();
+
+    reader.onloadend = () => {
+
+      const base64 =
+        reader.result;
+
+      setImage(base64);
+
+      // SAVE
+      localStorage.setItem(
+        storageKey,
+        base64
       );
-    }
+    };
+
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -30,8 +72,10 @@ export default function LabelCard({
     <div
       className="label-card"
       style={{
-        width: `${settings.width}mm`,
-        height: `${settings.height}mm`,
+        width:
+          `${settings.width}mm`,
+        height:
+          `${settings.height}mm`,
       }}
     >
 
@@ -64,7 +108,7 @@ export default function LabelCard({
 
         </div>
 
-        {/* FOTO BUTTON */}
+        {/* BUTTON */}
         <button
           onClick={() =>
             fileInputRef.current.click()
@@ -85,10 +129,10 @@ export default function LabelCard({
 
       </div>
 
-      {/* SAG */}
+      {/* SAĞ */}
       <div className="label-right">
 
-        {/* UST */}
+        {/* ÜST */}
         <div>
 
           <div className="mini-brand">
@@ -105,7 +149,7 @@ export default function LabelCard({
 
         </div>
 
-        {/* FIYAT */}
+        {/* FİYAT */}
         <div className="price">
           €{item.fiyat} HT
         </div>
@@ -114,7 +158,9 @@ export default function LabelCard({
         <div className="barcode-area">
 
           <Barcode
-            value={String(item.barkod)}
+            value={String(
+              item.barkod
+            )}
             height={18}
             width={1}
             fontSize={8}
